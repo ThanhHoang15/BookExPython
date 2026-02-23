@@ -1,0 +1,44 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Layout Example</title>
+    <link rel="stylesheet" href="../static/main.css">
+</head>
+<body>
+
+    <!-- Top Banner -->
+    <header class="banner">
+        <h1>Banner</h1>
+    </header>
+
+    <!-- Main Section -->
+    <div class="container">
+
+        <!-- Left Menu -->
+        <nav class="menu">
+            <ul>
+                {% block sidenav %}
+                    Menu Items
+                {% endblock sidenav %}
+            </ul>
+        </nav>
+
+        <!-- Right Main Content -->
+        <main class="content">
+            <h2>Main Content</h2>
+            <p>This is the right-side main content area.</p>
+        </main>
+
+    </div>
+
+    <!-- Bottom Copyright -->
+    <footer class="footer">
+        <p>© 2026 Your Name</p>
+    </footer>
+
+</body>
+</html>

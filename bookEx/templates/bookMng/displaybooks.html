@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends "base.html" %}
+{% load static %}
+
+{% block sidenav %}
+   {% for item in item_list %}
+      <li>
+        <a href="{{ item.link }}">  {{ item.item }} </a>
+      </li>
+   {% endfor %}
+{% endblock sidenav %}
+</body>
+</html>
