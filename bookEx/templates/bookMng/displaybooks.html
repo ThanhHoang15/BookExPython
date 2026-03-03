@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 {% extends "base.html" %}
 {% load static %}
 
@@ -15,5 +8,19 @@
       </li>
    {% endfor %}
 {% endblock sidenav %}
-</body>
-</html>
+
+{% block content %}
+   <h1>Display Books</h1>
+   <table border="2" >
+   {% for book in books %}
+      <tr>
+         <td>
+        <a href="{{ book.name }}">  {{ book.name }} </a>
+         </td>
+         <td>
+            {{ book.price }}
+         </td>
+      </tr>
+   {% endfor %}
+   </table>
+{% endblock content %}
