@@ -273,3 +273,11 @@ def mark_thread_read(request: HttpRequest, thread_id: int) -> HttpResponse:
 
     messages.success(request, "Thread marked as read.")
     return redirect("messagingbox:thread_detail", thread_id=thread.id)
+def aboutus(request):
+    return render(
+        request,
+        'bookMng/aboutus.html',
+        {
+            'item_list': MainMenu.objects.all()
+        }
+    )

@@ -11,7 +11,8 @@ urlpatterns = [
     path("inbox/", views.inbox, name="inbox"),
     path("compose/", views.compose_message, name="compose_message"),
     path("thread/<int:thread_id>/", views.thread_detail, name="thread_detail"),
-    path("thread/<int:thread_id>/mark-read/", views.mark_thread_read, name="mark_thread_read")
+    path("thread/<int:thread_id>/mark-read/", views.mark_thread_read, name="mark_thread_read"),
+    path('aboutus', views.aboutus, name='aboutus'),
 
 ]
 
