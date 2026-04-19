@@ -1,58 +1,73 @@
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Layout Example</title>
-    <link rel="stylesheet" href="../static/main.css">
-    <link rel="stylesheet" href="{% static 'table_format.css' %}" type="text/css" />
-     <link rel="stylesheet" href="{% static 'message_box.css' %}">
+
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link rel="stylesheet" href="{% static 'table_format.css' %}">
+    <link rel="stylesheet" href="{% static 'message_box.css' %}">
 </head>
+
 <body>
-    <span style="float: right;">
-        {% if user.is_authenticated %}
-           {{ user.username}}
-           <form action="{% url 'logout' %}?next=/" method="post">
-               <button type="submit">logout</button>
-               {% csrf_token %}
-           </form>
-        {% else %}
-           Not Logged in
-           <a href="{% url 'login' %}?next=/">login</a>
-        {% endif %}
-    </span>
-    <!-- Top Banner -->
-    <header class="banner">
-        <h1>Banner</h1>
-    </header>
 
-    <!-- Main Section -->
-    <div class="container">
+<!-- top right login -->
+<div class="top-right">
+    {% if user.is_authenticated %}
+        {{ user.username }}
+        <form action="{% url 'logout' %}?next=/" method="post">
+            {% csrf_token %}
+            <button type="submit">logout</button>
+        </form>
+    {% else %}
+        Not Logged in
+        <a href="{% url 'login' %}?next=/">login</a>
+    {% endif %}
+</div>
 
-        <!-- Left Menu -->
-        <nav class="menu">
-            <ul>
-                {% block sidenav %}
-                    Menu Items
-                {% endblock sidenav %}
-            </ul>
-        </nav>
+<!-- banner -->
+<header class="banner">
+    <h1>Banner</h1>
 
-        <!-- Right Main Content -->
-        <main class="content">
-                {% block content %}
-                    <h1>Main Content</h1>
-                {% endblock content %}
-        </main>
+    <!-- hamburger -->
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+</header>
 
-    </div>
+<!-- main layout -->
+<div class="container">
 
-    <!-- Bottom Copyright -->
-    <footer class="footer">
-        <p>© 2026 Your Name</p>
-    </footer>
+    <!-- sidebar -->
+    <nav class="menu" id="sideMenu">
+        <ul>
+            {% block sidenav %}
+            {% endblock %}
+        </ul>
+    </nav>
+
+    <!-- content -->
+    <main class="content">
+        <div class="page-box">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+</div>
+
+<!-- footer -->
+<footer class="footer">
+    <p>© 2026 Your Name</p>
+</footer>
+
+<!-- JS -->
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.classList.toggle("show");
+}
+</script>
 
 </body>
 </html>
