@@ -9,6 +9,7 @@ from django.utils import timezone
 class MainMenu(models.Model):
     item = models.CharField(max_length=300, unique=True)
     link = models.CharField(max_length=300, unique=True)
+    menu_order = models.IntegerField(default=0)
 
     def __str__(self):
         return self.item

@@ -37,7 +37,7 @@ def index(request):
     return render(request,
                   'bookMng/index.html',
                   {
-                      'item_list': MainMenu.objects.all()
+                      'item_list': MainMenu.objects.order_by('menu_order')
                   })
 
 
@@ -64,7 +64,7 @@ def postbook(request):
                   'bookMng/postbook.html',
                   {
                       'form': form,
-                      'item_list': MainMenu.objects.all(),
+                      'item_list': MainMenu.objects.order_by('menu_order'),
                       'submitted': submitted
                   })
 def displaybooks(request):
@@ -74,7 +74,7 @@ def displaybooks(request):
     return render(request,
                   'bookMng/displaybooks.html',
                   {
-                      'item_list': MainMenu.objects.all(),
+                      'item_list': MainMenu.objects.order_by('menu_order'),
                       'books': books
                   })
 
@@ -85,7 +85,7 @@ def mybooks(request):
     return render(request,
                   'bookMng/mybooks.html',
                   {
-                      'item_list': MainMenu.objects.all(),
+                      'item_list': MainMenu.objects.order_by('menu_order'),
                       'books': books
                   })
 
@@ -96,7 +96,7 @@ def book_detail(request, book_id):
     return render(request,
                   'bookMng/book_detail.html',
                   {
-                      'item_list': MainMenu.objects.all(),
+                      'item_list': MainMenu.objects.order_by('menu_order'),
                       'book': book
                   })
 
@@ -117,7 +117,7 @@ def book_delete(request, book_id):
     return render(request,
                   'bookMng/book_delete.html',
                   {
-                      'item_list': MainMenu.objects.all(),
+                      'item_list': MainMenu.objects.order_by('menu_order'),
                   })
 User = get_user_model()
 
@@ -278,6 +278,6 @@ def aboutus(request):
         request,
         'bookMng/aboutus.html',
         {
-            'item_list': MainMenu.objects.all()
+            'item_list': MainMenu.objects.order_by('menu_order')
         }
     )
