@@ -38,6 +38,11 @@ body {
 .container {
     display: flex;
     min-height: 400px;
+
+    background-image: url("/static/uploads/cover-image2.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* sidebar */
@@ -46,6 +51,9 @@ body {
     background-color: #f2f2f2;
     padding: 15px;
     flex-shrink: 0;
+
+    border-radius: 15px;
+    margin: 15px;
 }
 
 .menu ul {
@@ -74,6 +82,11 @@ body {
     flex: 1;
     padding: 40px 20px;
     display: flex;
+
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* center ALL page content */
@@ -83,6 +96,10 @@ body {
     align-items: center;
     width: fit-content;
     max-width: 100%;
+
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
 }
 
 /* center headings */
