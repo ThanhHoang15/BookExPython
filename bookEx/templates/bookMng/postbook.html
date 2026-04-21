@@ -1,10 +1,9 @@
 {% extends "base.html" %}
-{% load static %}
 
 {% block sidenav %}
    {% for item in item_list %}
       <li>
-        <a href="{{ item.link }}">  {{ item.item }} </a>
+        <a href="{{ item.link }}">{{ item.item }}</a>
       </li>
    {% endfor %}
 {% endblock sidenav %}
@@ -12,18 +11,18 @@
 {% block content %}
   <h1>Post Book</h1>
   {% if submitted %}
-      <h1> Post Book Successfully! </h1>
+      <h1>Post Book Successfully!</h1>
   {% else %}
     <form action="" enctype="multipart/form-data" method="post" novalidate>
       <table>
          {{ form.as_table }}
-          <tr>
+         <tr>
              <td>
                  <input type="submit" value="Submit">
              </td>
-          </tr>
+         </tr>
       </table>
       {% csrf_token %}
-     </form>
+    </form>
   {% endif %}
 {% endblock content %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-box">
+    <div class="content-card">
+        <h2>Search Books</h2>
+
+        <form method="get" action="{% url 'searchbooks' %}">
+            <input type="text" name="q" placeholder="Search book..." value="{{ query }}">
+            <button type="submit">Search</button>
+        </form>
+
+        <br>
+
+        {% if books %}
+            {% for book in books %}
+                <div style="margin-bottom: 15px;">
+                    <p>{{ book.name }}</p>
+                    {% if book.picture %}
+                        <img src="{{ book.picture.url }}" width="120">
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No books found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

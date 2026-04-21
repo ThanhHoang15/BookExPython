@@ -1,54 +1,32 @@
-from django.shortcuts import render
-
-from django.http import HttpResponse
-from .models import MainMenu
-
-from .forms import BookForm
-
-from django.http import HttpResponseRedirect
-
-from .models import Book
-
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseRedirect, Http404
+from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy
-
-from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
-from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
+from django.contrib import messages
+from django.db.models import Q
 
-from .models import MessageThread, PrivateMessage
+from .models import MainMenu, Book, MessageThread, PrivateMessage
+from .forms import BookForm
 
 
-# Create your views here.
-
-
-# def index(request):
-#     return HttpResponse("Hello World")
-
-# def index(request):
-#   return render(request, 'base.html')
-
+# ---------- INDEX ----------
 def index(request):
-    return render(request,
-                  'bookMng/index.html',
-                  {
-                      'item_list': MainMenu.objects.order_by('menu_order')
-                  })
+    return render(request, 'bookMng/index.html', {
+        'item_list': MainMenu.objects.order_by('menu_order')
+    })
 
 
-
-
+# ---------- POST BOOK ----------
 def postbook(request):
     submitted = False
+
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
-            #form.save()
             book = form.save(commit=False)
             try:
                 book.username = request.user
@@ -60,47 +38,51 @@ def postbook(request):
         form = BookForm()
         if 'submitted' in request.GET:
             submitted = True
-    return render(request,
-                  'bookMng/postbook.html',
-                  {
-                      'form': form,
-                      'item_list': MainMenu.objects.order_by('menu_order'),
-                      'submitted': submitted
-                  })
+
+    return render(request, 'bookMng/postbook.html', {
+        'form': form,
+        'item_list': MainMenu.objects.order_by('menu_order'),
+        'submitted': submitted
+    })
+
+
+# ---------- DISPLAY ----------
 def displaybooks(request):
     books = Book.objects.all()
-    for b in books:
-        b.pic_path = b.picture.url[14:]
-    return render(request,
-                  'bookMng/displaybooks.html',
-                  {
-                      'item_list': MainMenu.objects.order_by('menu_order'),
-                      'books': books
-                  })
+    return render(request, 'bookMng/displaybooks.html', {
+        'item_list': MainMenu.objects.order_by('menu_order'),
+        'books': books
+    })
 
+
+# ---------- MY BOOKS ----------
 def mybooks(request):
     books = Book.objects.filter(username=request.user)
-    for b in books:
-        b.pic_path = b.picture.url[14:]
-    return render(request,
-                  'bookMng/mybooks.html',
-                  {
-                      'item_list': MainMenu.objects.order_by('menu_order'),
-                      'books': books
-                  })
+    return render(request, 'bookMng/mybooks.html', {
+        'item_list': MainMenu.objects.order_by('menu_order'),
+        'books': books
+    })
 
+
+# ---------- DETAIL ----------
 def book_detail(request, book_id):
     book = Book.objects.get(id=book_id)
-
-    book.pic_path = book.picture.url[14:]
-    return render(request,
-                  'bookMng/book_detail.html',
-                  {
-                      'item_list': MainMenu.objects.order_by('menu_order'),
-                      'book': book
-                  })
+    return render(request, 'bookMng/book_detail.html', {
+        'item_list': MainMenu.objects.order_by('menu_order'),
+        'book': book
+    })
 
 
+# ---------- DELETE ----------
+def book_delete(request, book_id):
+    book = Book.objects.get(id=book_id)
+    book.delete()
+    return render(request, 'bookMng/book_delete.html', {
+        'item_list': MainMenu.objects.order_by('menu_order'),
+    })
+
+
+# ---------- REGISTER ----------
 class Register(CreateView):
     template_name = 'registration/register.html'
     form_class = UserCreationForm
@@ -110,21 +92,14 @@ class Register(CreateView):
         form.save()
         return HttpResponseRedirect(self.success_url)
 
-def book_delete(request, book_id):
-    book = Book.objects.get(id=book_id)
-    book.delete()
 
-    return render(request,
-                  'bookMng/book_delete.html',
-                  {
-                      'item_list': MainMenu.objects.order_by('menu_order'),
-                  })
 User = get_user_model()
 
 
+# ---------- INBOX ----------
 @login_required
 @require_GET
-def inbox(request: HttpRequest) -> HttpResponse:
+def inbox(request):
     threads = (
         MessageThread.objects
         .filter(Q(user1=request.user) | Q(user2=request.user))
@@ -134,27 +109,22 @@ def inbox(request: HttpRequest) -> HttpResponse:
 
     thread_data = []
     for thread in threads:
-        other_user = thread.other_user(request.user)
-        latest_message = thread.latest_message()
-        unread_count = thread.unread_count_for(request.user)
-        thread_data.append(
-            {
-                "thread": thread,
-                "other_user": other_user,
-                "latest_message": latest_message,
-                "unread_count": unread_count,
-            }
-        )
+        thread_data.append({
+            "thread": thread,
+            "other_user": thread.other_user(request.user),
+            "latest_message": thread.latest_message(),
+            "unread_count": thread.unread_count_for(request.user),
+        })
 
-    context = {
-        "thread_data": thread_data,
-    }
-    return render(request, "bookMng/inbox.html", context)
+    return render(request, "bookMng/inbox.html", {
+        "thread_data": thread_data
+    })
 
 
+# ---------- THREAD ----------
 @login_required
 @require_http_methods(["GET", "POST"])
-def thread_detail(request: HttpRequest, thread_id: int) -> HttpResponse:
+def thread_detail(request, thread_id):
     thread = get_object_or_404(
         MessageThread.objects.select_related("user1", "user2"),
         pk=thread_id,
@@ -165,17 +135,20 @@ def thread_detail(request: HttpRequest, thread_id: int) -> HttpResponse:
 
     if request.method == "POST":
         body = request.POST.get("body", "").strip()
+
         if not body:
             messages.error(request, "Message body cannot be empty.")
             return redirect("thread_detail", thread_id=thread.id)
 
         recipient = thread.other_user(request.user)
+
         PrivateMessage.objects.create(
             thread=thread,
             sender=request.user,
             recipient=recipient,
             body=body,
         )
+
         thread.save(update_fields=["updated_at"])
         messages.success(request, "Message sent.")
         return redirect("thread_detail", thread_id=thread.id)
@@ -186,17 +159,17 @@ def thread_detail(request: HttpRequest, thread_id: int) -> HttpResponse:
     for msg in unread_messages:
         msg.mark_as_read()
 
-    context = {
+    return render(request, "bookMng/thread.html", {
         "thread": thread,
         "other_user": thread.other_user(request.user),
         "thread_messages": thread_messages,
-    }
-    return render(request, "bookMng/thread.html", context)
+    })
 
 
+# ---------- COMPOSE ----------
 @login_required
 @require_http_methods(["GET", "POST"])
-def compose_message(request: HttpRequest) -> HttpResponse:
+def compose_message(request):
     user_id = request.GET.get("user_id") or request.POST.get("user_id")
     selected_user = None
 
@@ -214,54 +187,44 @@ def compose_message(request: HttpRequest) -> HttpResponse:
 
         if not target_user_id:
             messages.error(request, "Please choose a recipient.")
-            return render(
-                request,
-                "bookMng/compose.html",
-                {
-                    "available_users": available_users,
-                    "selected_user": selected_user,
-                },
-            )
+            return render(request, "bookMng/compose.html", {
+                "available_users": available_users,
+                "selected_user": selected_user,
+            })
 
         recipient = get_object_or_404(User, pk=target_user_id)
 
-        if recipient == request.user:
-            messages.error(request, "You cannot send a message to yourself.")
-            return redirect("compose_message")
-
         if not body:
             messages.error(request, "Message body cannot be empty.")
-            return render(
-                request,
-                "bookMng/compose.html",
-                {
-                    "available_users": available_users,
-                    "selected_user": recipient,
-                },
-            )
+            return render(request, "bookMng/compose.html", {
+                "available_users": available_users,
+                "selected_user": recipient,
+            })
 
         thread = MessageThread.get_or_create_thread(request.user, recipient)
+
         PrivateMessage.objects.create(
             thread=thread,
             sender=request.user,
             recipient=recipient,
             body=body,
         )
+
         thread.save(update_fields=["updated_at"])
 
         messages.success(request, f"Message sent to {recipient.username}.")
         return redirect("thread_detail", thread_id=thread.id)
 
-    context = {
+    return render(request, "bookMng/compose.html", {
         "available_users": available_users,
         "selected_user": selected_user,
-    }
-    return render(request, "bookMng/compose.html", context)
+    })
 
 
+# ---------- MARK READ ----------
 @login_required
 @require_POST
-def mark_thread_read(request: HttpRequest, thread_id: int) -> HttpResponse:
+def mark_thread_read(request, thread_id):
     thread = get_object_or_404(MessageThread, pk=thread_id)
 
     if not thread.has_participant(request.user):
@@ -272,12 +235,26 @@ def mark_thread_read(request: HttpRequest, thread_id: int) -> HttpResponse:
         msg.mark_as_read()
 
     messages.success(request, "Thread marked as read.")
-    return redirect("messagingbox:thread_detail", thread_id=thread.id)
+    return redirect("thread_detail", thread_id=thread.id)
+
+
+# ---------- ABOUT ----------
 def aboutus(request):
-    return render(
-        request,
-        'bookMng/aboutus.html',
-        {
-            'item_list': MainMenu.objects.order_by('menu_order')
-        }
-    )
+    return render(request, 'bookMng/aboutus.html', {
+        'item_list': MainMenu.objects.order_by('menu_order')
+    })
+
+
+# ---------- SEARCH ----------
+def searchbooks(request):
+    query = request.GET.get('q', '')
+    books = Book.objects.all()
+
+    if query:
+        books = Book.objects.filter(name__icontains=query)
+
+    return render(request, 'bookMng/searchbooks.html', {
+        'item_list': MainMenu.objects.order_by('menu_order'),
+        'books': books,
+        'query': query
+    })

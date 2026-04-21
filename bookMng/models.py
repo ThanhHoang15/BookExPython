@@ -19,8 +19,7 @@ class Book(models.Model):
     web = models.URLField(max_length=300)
     price = models.DecimalField(decimal_places=2, max_digits=8)
     publishdate = models.DateField(auto_now=True)
-    picture = models.FileField(upload_to='bookEx/static/uploads')
-    pic_path = models.CharField(max_length=300, editable=False, blank=True)
+    picture = models.ImageField(upload_to='uploads/')
     username = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
 class MessageThread(models.Model):
