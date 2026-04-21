@@ -1,29 +1,103 @@
 {% extends "base.html" %}
 
+{% block body_class %}search-page{% endblock %}
+
+{% block extra_css %}
+<style>
+.search-page .menu {
+    display: none;
+}
+
+.search-page .content {
+    display: block;
+    padding: 40px 20px;
+}
+
+.search-page .page-box {
+    width: 100%;
+    max-width: 100%;
+    align-items: flex-start;
+    box-sizing: border-box;
+}
+
+.search-form {
+    margin-bottom: 25px;
+}
+
+.search-form input {
+    padding: 8px;
+    width: 250px;
+}
+
+.search-form button {
+    padding: 8px 12px;
+}
+
+.book-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+}
+
+.book-card {
+    width: 180px;
+}
+
+.book-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.book-name {
+    margin: 0;
+    font-weight: 600;
+}
+
+.book-price {
+    margin: 0;
+    font-weight: 600;
+    color: green;
+    white-space: nowrap;
+}
+
+.book-card img {
+    width: 180px;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    border-radius: 6px;
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="page-box">
-    <div class="content-card">
-        <h2>Search Books</h2>
+<h2>Search Books</h2>
 
-        <form method="get" action="{% url 'searchbooks' %}">
-            <input type="text" name="q" placeholder="Search book..." value="{{ query }}">
-            <button type="submit">Search</button>
-        </form>
+<form method="get" action="{% url 'searchbooks' %}" class="search-form">
+    <input type="text" name="q" placeholder="Search book..." value="{{ query }}">
+    <button type="submit">Search</button>
+</form>
 
-        <br>
-
-        {% if books %}
-            {% for book in books %}
-                <div style="margin-bottom: 15px;">
-                    <p>{{ book.name }}</p>
-                    {% if book.picture %}
-                        <img src="{{ book.picture.url }}" width="120">
-                    {% endif %}
+{% if books %}
+    <div class="book-grid">
+        {% for book in books %}
+            <div class="book-card">
+                <div class="book-top">
+                    <p class="book-name">{{ book.name }}</p>
+                    <p class="book-price">${{ book.price }}</p>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p>No books found.</p>
-        {% endif %}
+
+                {% if book.picture %}
+                    <img src="{{ book.picture.url }}" alt="{{ book.name }}">
+                {% endif %}
+            </div>
+        {% endfor %}
     </div>
-</div>
+{% else %}
+    <p>No books found.</p>
+{% endif %}
 {% endblock %}

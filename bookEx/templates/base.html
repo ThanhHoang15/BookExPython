@@ -9,9 +9,10 @@
     <link rel="stylesheet" href="{% static 'main.css' %}">
     <link rel="stylesheet" href="{% static 'table_format.css' %}">
     <link rel="stylesheet" href="{% static 'message_box.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
 <!-- top right login -->
 <div class="top-right">
