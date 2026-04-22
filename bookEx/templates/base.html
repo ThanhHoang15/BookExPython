@@ -18,9 +18,7 @@
 </div>
 
 <div class="top-right">
-    <div class="sale-text">
-        Buy 2 get 1 free — use code B2G1
-    </div>
+    <div class="sale-text">Buy 2 get 1 free — use code B2G1</div>
 
     {% if user.is_authenticated %}
         <div class="top-right-box">
@@ -69,7 +67,7 @@
 </div>
 
 <header class="banner">
-    <h1>Book Exchange System</h1>
+    <h1>Book System</h1>
     <button class="hamburger" onclick="toggleMenu()">☰</button>
 </header>
 
@@ -77,6 +75,12 @@
     <nav class="menu" id="sideMenu">
         <ul>
             {% block sidenav %}
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'mybooks' %}">My Books</a></li>
+            <li><a href="{% url 'postbook' %}">Post Book</a></li>
+            <li><a href="{% url 'displaybooks' %}">Display Books</a></li>
+            <li><a href="{% url 'searchbooks' %}">Search Books</a></li>
+            <li><a href="{% url 'aboutus' %}">About Us</a></li>
             {% endblock %}
         </ul>
     </nav>

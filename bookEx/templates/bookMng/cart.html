@@ -5,14 +5,17 @@
 {% block extra_css %}
 <style>
 .cart-page .content {
-    display: block;
+    flex: 1;
+    padding: 40px 20px;
+    display: flex;
 }
 
 .cart-page .page-box {
     width: 100%;
-    max-width: 900px;
+    max-width: 1100px;
     margin: 0 auto;
     align-items: stretch;
+    box-sizing: border-box;
 }
 
 .cart-title {
@@ -62,6 +65,17 @@
 .back-link {
     display: inline-block;
     margin-top: 15px;
+}
+
+@media (max-width: 767px) {
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .total-box {
+        text-align: left;
+    }
 }
 </style>
 {% endblock %}

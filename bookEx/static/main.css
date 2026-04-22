@@ -31,27 +31,12 @@ body {
 }
 
 .sale-text {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    white-space: nowrap;
     font-size: 15px;
     font-weight: 700;
     letter-spacing: 0.4px;
     color: black;
+    text-align: center;
     line-height: 1;
-    transform: translateY(-50%);
-    will-change: transform;
-    animation: sale-slide 10s linear infinite;
-}
-
-@keyframes sale-slide {
-    0% {
-        transform: translateY(-50%) translateX(0);
-    }
-    100% {
-        transform: translateY(-50%) translateX(calc(100vw - 320px));
-    }
 }
 
 .top-right-box {
@@ -260,16 +245,8 @@ body {
 
     .sale-text {
         font-size: 11px;
-        animation: sale-slide-mobile 8s linear infinite;
-    }
-
-    @keyframes sale-slide-mobile {
-        0% {
-            transform: translateY(-50%) translateX(0);
-        }
-        100% {
-            transform: translateY(-50%) translateX(calc(100vw - 220px));
-        }
+        padding-right: 90px;
+        text-align: left;
     }
 
     .top-right-box {
@@ -311,6 +288,8 @@ body {
     .menu {
         display: none;
         width: 100%;
+        margin: 15px 0;
+        border-radius: 0;
     }
 
     .menu.show {
@@ -319,6 +298,13 @@ body {
 
     .content {
         width: 100%;
-        padding: 50px 15px 20px 15px;
+        padding: 20px 15px;
+        box-sizing: border-box;
+    }
+
+    .page-box {
+        width: 100%;
+        padding: 15px;
+        box-sizing: border-box;
     }
 }
