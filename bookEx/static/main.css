@@ -30,13 +30,40 @@ body {
     overflow: hidden;
 }
 
+/* full center space for moving text */
+.sale-text-wrap {
+    position: absolute;
+    left: 20px;
+    right: 140px;
+    top: 50%;
+    transform: translateY(-50%);
+    overflow: hidden;
+    white-space: nowrap;
+    height: 22px;
+    display: flex;
+    align-items: center;
+}
+
+/* start from left and move to right */
 .sale-text {
+    position: absolute;
+    left: 0;
     font-size: 15px;
     font-weight: 700;
     letter-spacing: 0.4px;
     color: black;
-    text-align: center;
     line-height: 1;
+    white-space: nowrap;
+    animation: saleMove 10s linear infinite;
+}
+
+@keyframes saleMove {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(120vw);
+    }
 }
 
 .top-right-box {
@@ -47,6 +74,7 @@ body {
     display: flex;
     align-items: center;
     gap: 18px;
+    z-index: 2;
 }
 
 .icon-form {
@@ -231,6 +259,157 @@ body {
     padding: 10px;
 }
 
+/* home only section under footer */
+.sell-section {
+    width: 100%;
+    background: #ffffff;
+    padding: 20px 20px 20px 20px;
+    box-sizing: border-box;
+}
+
+.sell-section-inner {
+    max-width: 2000px;
+    margin: 0 auto;
+    min-height: 420px;
+    border-radius: 24px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #000000;
+    position: relative;
+    padding: 60px 60px;
+    box-sizing: border-box;
+}
+
+.sell-text {
+    width: 42%;
+    z-index: 2;
+}
+
+.sell-text h2 {
+    margin: 0 0 14px 0;
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 1;
+    color: white;
+    letter-spacing: 1px;
+}
+
+.sell-text p {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 600;
+    color: white;
+    line-height: 1.2;
+}
+
+.sell-visual {
+    width: 58%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.book-3d-scene {
+    position: relative;
+    width: 100%;
+    max-width: 760px;
+    height: 340px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1200px;
+}
+
+.book-float {
+    position: relative;
+    z-index: 2;
+    width: 88%;
+    max-width: 700px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    transform-origin: center center;
+    animation: floatingBook 5s ease-in-out infinite;
+    filter: drop-shadow(0 18px 25px rgba(255, 255, 255, 0.08))
+            drop-shadow(0 40px 35px rgba(0, 0, 0, 0.75));
+}
+
+@keyframes floatingBook {
+    0% {
+        transform: translateY(0px) rotate(-2deg) rotateY(0deg);
+    }
+    25% {
+        transform: translateY(-10px) rotate(1deg) rotateY(6deg);
+    }
+    50% {
+        transform: translateY(-18px) rotate(-1deg) rotateY(0deg);
+    }
+    75% {
+        transform: translateY(-8px) rotate(2deg) rotateY(-6deg);
+    }
+    100% {
+        transform: translateY(0px) rotate(-2deg) rotateY(0deg);
+    }
+}
+
+@media (max-width: 991px) {
+    .sell-section-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+        padding: 35px 25px;
+    }
+
+    .sell-text,
+    .sell-visual {
+        width: 100%;
+    }
+
+    .sell-text h2 {
+        font-size: 52px;
+    }
+
+    .sell-text p {
+        font-size: 28px;
+    }
+
+    .book-3d-scene {
+        height: 280px;
+    }
+
+    .book-float {
+        width: 92%;
+    }
+}
+/* sell link (keep medium size) */
+.sell-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 26px;
+    font-weight: 600;
+    color: blue;
+    text-decoration: none;
+    transition: 0.25s;
+}
+
+.sell-link:hover {
+    color: yellow;
+    transform: translateX(4px);
+}
+
+/* description SMALL */
+.sell-text .sell-desc {
+    margin-top: 6px !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    color: #bbbbbb !important;
+    line-height: 1.3 !important;
+    max-width: 500px !important;
+}
+
+
 /* mobile */
 @media (max-width: 767px) {
     .promo-bar {
@@ -243,10 +422,15 @@ body {
         padding: 10px 12px;
     }
 
+    .sale-text-wrap {
+        left: 12px;
+        right: 90px;
+        height: 18px;
+    }
+
     .sale-text {
         font-size: 11px;
-        padding-right: 90px;
-        text-align: left;
+        animation: saleMove 8s linear infinite;
     }
 
     .top-right-box {
@@ -306,5 +490,31 @@ body {
         width: 100%;
         padding: 15px;
         box-sizing: border-box;
+    }
+
+    .sell-section {
+        padding: 20px 15px 35px;
+    }
+
+    .sell-section-inner {
+        min-height: auto;
+        border-radius: 18px;
+        padding: 25px 18px;
+    }
+
+    .sell-text h2 {
+        font-size: 38px;
+    }
+
+    .sell-text p {
+        font-size: 22px;
+    }
+
+    .book-3d-scene {
+        height: 210px;
+    }
+
+    .book-float {
+        width: 100%;
     }
 }

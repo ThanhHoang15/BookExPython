@@ -4,7 +4,7 @@
 {% block sidenav %}
    {% for item in item_list %}
       <li>
-        <a href="{{ item.link }}">  {{ item.item }} </a>
+        <a href="{{ item.link }}">{{ item.item }}</a>
       </li>
    {% endfor %}
 {% endblock sidenav %}
@@ -12,3 +12,29 @@
 {% block content %}
    <h1>Welcome to Book Exchange System</h1>
 {% endblock content %}
+
+{% block home_extra_section %}
+<section class="sell-section">
+    <div class="sell-section-inner">
+        <div class="sell-text">
+            <h2>GOT BOOKS?</h2>
+
+            <a href="{% url 'postbook' %}" class="sell-link">
+                sell here
+            </a>
+
+            <p class="sell-desc">
+                Find great readers, list your own book in just a click.
+                Connect with others, exchange books effortlessly,
+                and give your favorites a second life.
+            </p>
+        </div>
+
+        <div class="sell-visual">
+            <div class="book-3d-scene">
+                <img src="{% static 'uploads/book.png' %}" alt="Open book" class="book-float">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock home_extra_section %}
