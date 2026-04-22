@@ -37,4 +37,27 @@
         </div>
     </div>
 </section>
+
+<section class="sell-section">
+    <div class="sell-section-inner reverse-layout">
+        <div class="sell-visual sell-visual-left">
+            <div class="book-3d-scene">
+                <img src="{% static 'uploads/book2.png' %}" alt="Open book" class="book-float book-float-opposite">
+            </div>
+        </div>
+
+        <div class="sell-text">
+            <h2>NEED BOOKS?</h2>
+
+            <a href="{% url 'searchbooks' %}" class="sell-link">
+                Buy here.
+            </a>
+
+            <p class="sell-desc">
+                Jump into new stories or find your next favorite in seconds.
+                Browse listings, connect with sellers, and start reading right away.
+            </p>
+        </div>
+    </div>
+</section>
 {% endblock home_extra_section %}
