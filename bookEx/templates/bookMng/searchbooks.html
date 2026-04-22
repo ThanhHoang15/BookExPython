@@ -70,6 +70,25 @@
     object-fit: cover;
     display: block;
     border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.add-cart-form {
+    margin: 0;
+}
+
+.add-cart-btn {
+    width: 100%;
+    padding: 8px 10px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.add-cart-btn:hover {
+    background-color: #333;
 }
 </style>
 {% endblock %}
@@ -94,6 +113,11 @@
                 {% if book.picture %}
                     <img src="{{ book.picture.url }}" alt="{{ book.name }}">
                 {% endif %}
+
+                <form method="post" action="{% url 'add_to_cart' book.id %}" class="add-cart-form">
+                    {% csrf_token %}
+                    <button type="submit" class="add-cart-btn">Add to Cart</button>
+                </form>
             </div>
         {% endfor %}
     </div>

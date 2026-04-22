@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block body_class %}cart-page{% endblock %}
+
+{% block extra_css %}
+<style>
+.cart-page .content {
+    display: block;
+}
+
+.cart-page .page-box {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+.cart-title {
+    margin-bottom: 20px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.cart-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cart-left img {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.cart-info p {
+    margin: 4px 0;
+}
+
+.remove-btn {
+    padding: 8px 12px;
+    background-color: #c00;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.total-box {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 15px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h2 class="cart-title">Your Cart</h2>
+
+{% if cart_items %}
+    {% for item in cart_items %}
+        <div class="cart-item">
+            <div class="cart-left">
+                {% if item.book.picture %}
+                    <img src="{{ item.book.picture.url }}" alt="{{ item.book.name }}">
+                {% endif %}
+
+                <div class="cart-info">
+                    <p><strong>{{ item.book.name }}</strong></p>
+                    <p>Price: ${{ item.book.price }}</p>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <p>Subtotal: ${{ item.subtotal }}</p>
+                </div>
+            </div>
+
+            <form method="post" action="{% url 'remove_from_cart' item.book.id %}">
+                {% csrf_token %}
+                <button type="submit" class="remove-btn">Remove</button>
+            </form>
+        </div>
+    {% endfor %}
+
+    <div class="total-box">
+        <h3>Total: ${{ total }}</h3>
+    </div>
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+
+<a href="{% url 'searchbooks' %}" class="back-link">Continue Shopping</a>
+{% endblock %}
