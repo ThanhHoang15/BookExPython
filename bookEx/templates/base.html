@@ -99,7 +99,36 @@
 {% block home_extra_section %}{% endblock %}
 
 <footer class="footer">
-    <p>© 2026 Book System | CS 3337 Project | Thanh Hoang</p>
+    <div class="footer-top">
+
+        <!-- QUICK LINKS FIRST -->
+        <div class="footer-right">
+            <h4>Quick links</h4>
+            <div class="footer-links">
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Refund Policy</a>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">About Us</a>
+                <a href="{% url 'searchbooks' %}">Search</a>
+            </div>
+        </div>
+
+        <!-- EMAIL BELOW -->
+        <div class="footer-left">
+            <h3>Subscribe to our emails</h3>
+            <div class="email-box">
+                <input type="text" placeholder="Email">
+                <span class="arrow">→</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 Book System | CS 3337 Project | Thanh Hoang
+    </div>
 </footer>
 
 <script>
