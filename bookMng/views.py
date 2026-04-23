@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
@@ -10,7 +9,7 @@ from django.contrib import messages
 from django.db.models import Q
 
 from .models import MainMenu, Book, MessageThread, PrivateMessage
-from .forms import BookForm
+from .forms import BookForm, RegisterForm
 
 
 # ---------- INDEX ----------
@@ -85,7 +84,7 @@ def book_delete(request, book_id):
 # ---------- REGISTER ----------
 class Register(CreateView):
     template_name = 'registration/register.html'
-    form_class = UserCreationForm
+    form_class = RegisterForm
     success_url = reverse_lazy('register-success')
 
     def form_valid(self, form):

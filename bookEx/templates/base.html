@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'main.css' %}">
     <link rel="stylesheet" href="{% static 'table_format.css' %}">
     <link rel="stylesheet" href="{% static 'message_box.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -69,11 +70,9 @@
 </div>
 
 <header class="banner">
-    <h1>Book System</h1>
     <button class="hamburger" onclick="toggleMenu()">☰</button>
-</header>
+    <h1>Book System</h1>
 
-<div class="container">
     <nav class="menu" id="sideMenu">
         <ul>
             {% block sidenav %}
@@ -86,7 +85,9 @@
             {% endblock %}
         </ul>
     </nav>
+</header>
 
+<div class="container">
     <main class="content">
         <div class="page-box">
             {% block content %}

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block body_class %}home-page{% endblock %}
+
 {% block sidenav %}
    {% for item in item_list %}
       <li>
@@ -57,6 +59,25 @@
                 Jump into new stories or find your next favorite in seconds.
                 Browse listings, connect with sellers, and start reading right away.
             </p>
+        </div>
+    </div>
+</section>
+
+<section class="sell-section">
+    <div class="sell-section-inner love-books-section">
+        <div class="love-books-overlay">
+            <div class="sell-text love-books-text">
+                <h2>LOVE BOOKS?</h2>
+
+                <a href="{% url 'register' %}" class="sell-link">
+                    Register here
+                </a>
+
+                <p class="sell-desc">
+                    Create your account, discover new favorites, connect with readers,
+                    and enjoy endless stories all in one place.
+                </p>
+            </div>
         </div>
     </div>
 </section>
