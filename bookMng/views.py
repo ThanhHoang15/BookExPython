@@ -332,3 +332,80 @@ def remove_from_cart(request, book_id):
 
     request.session['cart'] = cart
     return redirect('cart')
+
+
+def policy_page(request, policy_type):
+    item_list = MainMenu.objects.order_by('menu_order')
+
+    policies = {
+        'privacy': {
+            'title': 'Privacy Policy',
+            'content': """
+    We want users to feel safe using Book System.
+
+    We collect basic information such as username and account details to provide our services.
+    Your information is used only for platform functionality, communication, and improving user experience.
+
+    We do not sell, trade, or share your personal data with third parties.
+    All data is handled securely and only accessed when necessary for system operations.
+
+    Users are responsible for keeping their account credentials safe.
+    Any suspicious activity should be reported immediately.
+
+    By using Book System, you agree to this privacy policy and how your data is handled.
+    """
+        },
+
+        'refund': {
+            'title': 'Refund Policy',
+            'content': """
+    We want users to feel safe using Book System.
+
+    If there is a problem with a purchase, refund requests should be made within 7 days.
+    The item should match the description shown in the listing.
+    If a seller provides incorrect or misleading information, the buyer may request a refund.
+    Refund decisions are reviewed case by case.
+    Book System may contact both buyer and seller before making a final decision.
+
+    Refunds may not be guaranteed in all cases, especially if the issue is caused by misuse
+    or failure to follow agreed transaction terms.
+    """
+        },
+
+        'shipping': {
+            'title': 'Shipping Policy',
+            'content': """
+    Books should be shipped within 3 business days after purchase unless another arrangement is agreed on.
+    Sellers should package books carefully to prevent damage.
+    Delivery times may vary depending on location and shipping method.
+    Buyers should make sure their shipping information is correct before placing an order.
+    Book System is not responsible for delays caused by carriers, weather, or incorrect addresses.
+
+    Tracking information should be provided when available to ensure transparency between buyer and seller.
+    """
+        },
+
+        'terms': {
+            'title': 'Terms of Service',
+            'content': """
+    By using Book System, you agree to use the platform responsibly.
+    Users must provide accurate information when posting books or creating accounts.
+    Listings must not contain false, harmful, or illegal content.
+    Users must treat other users respectfully in messages and transactions.
+    Book System reserves the right to remove listings or suspend accounts that violate these rules.
+
+    Repeated violations or abusive behavior may result in permanent account suspension.
+    """
+        }
+    }
+
+    policy = policies.get(policy_type)
+
+    if not policy:
+        raise Http404("Policy page not found.")
+
+    return render(request, 'bookMng/policy.html', {
+        'item_list': item_list,
+        'title': policy['title'],
+        'content': policy['content']
+    })

@@ -101,27 +101,25 @@
 <footer class="footer">
     <div class="footer-top">
 
-        <!-- QUICK LINKS FIRST -->
         <div class="footer-right">
             <h4>Quick links</h4>
             <div class="footer-links">
-                <a href="#">Contact</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Refund Policy</a>
-                <a href="#">Shipping Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">About Us</a>
+                <a href="{% url 'aboutus' %}">Contact</a>
+                <a href="{% url 'policy' 'privacy' %}">Privacy Policy</a>
+                <a href="{% url 'policy' 'refund' %}">Refund Policy</a>
+                <a href="{% url 'policy' 'shipping' %}">Shipping Policy</a>
+                <a href="{% url 'policy' 'terms' %}">Terms of Service</a>
+                <a href="{% url 'aboutus' %}">About Us</a>
                 <a href="{% url 'searchbooks' %}">Search</a>
             </div>
         </div>
 
-        <!-- EMAIL BELOW -->
         <div class="footer-left">
             <h3>Subscribe to our emails</h3>
-            <div class="email-box">
-                <input type="text" placeholder="Email">
-                <span class="arrow">→</span>
-            </div>
+                <div class="email-box">
+                    <input type="text" id="emailInput" placeholder="Email" onkeypress="if(event.key==='Enter'){subscribeEmail()}">
+                    <span class="arrow" onclick="subscribeEmail()">→</span>
+                </div>
         </div>
 
     </div>
@@ -135,6 +133,18 @@
 function toggleMenu() {
     const menu = document.getElementById("sideMenu");
     menu.classList.toggle("show");
+}
+
+function subscribeEmail() {
+    const email = document.getElementById("emailInput").value;
+
+    if (email.trim() === "") {
+        alert("Please enter your email.");
+        return;
+    }
+
+    alert("Thank you for subscribing!");
+    document.getElementById("emailInput").value = "";
 }
 </script>
 
