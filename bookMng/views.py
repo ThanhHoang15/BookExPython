@@ -298,6 +298,30 @@ def cart_view(request):
     })
 
 
+def checkout_view(request):
+    cart = request.session.get('cart', {})
+    cart_items = []
+    total = 0
+
+    for book_id, quantity in cart.items():
+        try:
+            book = Book.objects.get(id=book_id)
+            subtotal = book.price * quantity
+            total += subtotal
+            cart_items.append({
+                'book': book,
+                'quantity': quantity,
+                'subtotal': subtotal,
+            })
+        except Book.DoesNotExist:
+            pass
+
+    return render(request, 'bookMng/checkout.html', {
+        'cart_items': cart_items,
+        'total': total,
+    })
+
+
 @require_POST
 def remove_from_cart(request, book_id):
     cart = request.session.get('cart', {})
