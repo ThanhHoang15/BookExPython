@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block body_class %}search-page{% endblock %}
+
 {% block sidenav %}
    {% for item in item_list %}
       <li>
@@ -10,27 +12,35 @@
 {% endblock sidenav %}
 
 {% block content %}
-   <h1>Display Books</h1>
-   <table border="2">
-      <tr>
-          <th>Book Name</th>
-          <th>Book Price</th>
-          <th>User Name</th>
-          <th>DELETE</th>
-      </tr>
-      {% for book in books %}
-      <tr>
-         <td>
-            <a href="{% url 'book_detail' book.id %}">{{ book.name }}</a>
-         </td>
-         <td>{{ book.price }}</td>
-         <td>{{ book.username }}</td>
-         <td>
-            <a href="{% url 'book_delete' book.id %}">
-                <img src="{% static 'delete_button.jpg' %}" width="100" />
-            </a>
-         </td>
-      </tr>
-      {% endfor %}
-   </table>
+<h2>My Books</h2>
+
+{% if books %}
+    <div class="book-grid">
+        {% for book in books %}
+            <div class="book-card">
+
+                <div class="book-top">
+                    <p class="book-name">
+                        <a href="{% url 'book_detail' book.id %}">
+                            {{ book.name }}
+                        </a>
+                    </p>
+                    <p class="book-price">${{ book.price }}</p>
+                </div>
+
+                {% if book.picture %}
+                    <img src="{{ book.picture.url }}" alt="{{ book.name }}">
+                {% endif %}
+
+                <!-- DELETE BUTTON -->
+                <a href="{% url 'book_delete' book.id %}" class="delete-btn">
+                    Delete
+                </a>
+
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No books found.</p>
+{% endif %}
 {% endblock content %}

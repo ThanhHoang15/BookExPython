@@ -409,6 +409,8 @@ body {
     }
 }
 
+
+
 /* links and description */
 .sell-link {
     display: inline-block;
@@ -432,6 +434,25 @@ body {
     color: #bbbbbb;
     line-height: 1.4;
     max-width: 420px;
+}
+
+.delete-btn {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 6px 12px;
+    background-color: transparent;
+    color: #d33;
+    border: 1px solid #d33;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13px;
+    text-align: center;
+}
+
+.delete-btn:hover {
+    background-color: #d33;
+    color: white;
 }
 
 /* tablet */
