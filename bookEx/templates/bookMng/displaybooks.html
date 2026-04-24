@@ -25,9 +25,23 @@
             </a>
 
             <div class="displaybook-info">
-                <h3 class="displaybook-title">
-                    <a href="{% url 'book_detail' book.id %}">{{ book.name }}</a>
-                </h3>
+                <div class="title-row">
+                    <h3 class="displaybook-title">
+                        <a href="{% url 'book_detail' book.id %}">{{ book.name }}</a>
+                    </h3>
+
+                    <form method="post" action="{% url 'toggle_favorite' book.id %}" class="heart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="heart-btn">
+                            {% if book.is_favorite %}♥{% else %}♡{% endif %}
+                        </button>
+                    </form>
+                </div>
+
+                <p class="rating">
+                    ⭐ {{ book.avg_rating }} ({{ book.total_ratings }})
+                </p>
 
                 <p class="displaybook-price">${{ book.price }}</p>
 

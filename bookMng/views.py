@@ -6,10 +6,40 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Avg, Count
 
-from .models import MainMenu, Book, MessageThread, PrivateMessage
-from .forms import BookForm, RegisterForm
+from .models import (
+    MainMenu,
+    Book,
+    MessageThread,
+    PrivateMessage,
+    BookComment,
+    BookRating,
+    BookFavorite,
+)
+from .forms import BookForm, RegisterForm, CommentForm, RatingForm
+
+
+def attach_book_meta(books, user):
+    favorite_ids = set()
+    user_ratings = {}
+
+    if user.is_authenticated:
+        favorite_ids = set(
+            BookFavorite.objects.filter(user=user, book__in=books).values_list("book_id", flat=True)
+        )
+        user_ratings = {
+            item["book_id"]: item["value"]
+            for item in BookRating.objects.filter(user=user, book__in=books).values("book_id", "value")
+        }
+
+    for book in books:
+        book.avg_rating = round(book.avg_rating_value or 0, 1)
+        book.total_ratings = book.total_ratings_count or 0
+        book.is_favorite = book.id in favorite_ids
+        book.user_rating = user_ratings.get(book.id)
+
+    return books
 
 
 # ---------- INDEX ----------
@@ -47,7 +77,16 @@ def postbook(request):
 
 # ---------- DISPLAY ----------
 def displaybooks(request):
-    books = Book.objects.all()
+    books = list(
+        Book.objects.select_related("username")
+        .annotate(
+            avg_rating_value=Avg("ratings__value"),
+            total_ratings_count=Count("ratings"),
+        )
+        .order_by("-id")
+    )
+    books = attach_book_meta(books, request.user)
+
     return render(request, 'bookMng/displaybooks.html', {
         'item_list': MainMenu.objects.order_by('menu_order'),
         'books': books
@@ -65,11 +104,96 @@ def mybooks(request):
 
 # ---------- DETAIL ----------
 def book_detail(request, book_id):
-    book = Book.objects.get(id=book_id)
+    book = get_object_or_404(
+        Book.objects.select_related("username").annotate(
+            avg_rating_value=Avg("ratings__value"),
+            total_ratings_count=Count("ratings"),
+        ),
+        id=book_id
+    )
+
+    book.avg_rating = round(book.avg_rating_value or 0, 1)
+    book.total_ratings = book.total_ratings_count or 0
+    book.is_favorite = False
+    book.user_rating = None
+
+    if request.user.is_authenticated:
+        book.is_favorite = BookFavorite.objects.filter(book=book, user=request.user).exists()
+        user_rating = BookRating.objects.filter(book=book, user=request.user).first()
+        if user_rating:
+            book.user_rating = user_rating.value
+
+    comments = BookComment.objects.filter(book=book).select_related("user")
+    comment_form = CommentForm()
+    rating_form = RatingForm(initial={"value": book.user_rating}) if request.user.is_authenticated else RatingForm()
+
     return render(request, 'bookMng/book_detail.html', {
         'item_list': MainMenu.objects.order_by('menu_order'),
-        'book': book
+        'book': book,
+        'comments': comments,
+        'comment_form': comment_form,
+        'rating_form': rating_form,
     })
+
+
+@login_required
+@require_POST
+def add_book_comment(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    form = CommentForm(request.POST)
+
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.book = book
+        comment.user = request.user
+        comment.save()
+    else:
+        messages.error(request, "Comment cannot be empty.")
+
+    return redirect('book_detail', book_id=book.id)
+
+
+@login_required
+@require_POST
+def rate_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    value = request.POST.get("value")
+
+    try:
+        value = int(value)
+    except (TypeError, ValueError):
+        messages.error(request, "Please choose a rating from 1 to 5.")
+        return redirect('book_detail', book_id=book.id)
+
+    if value < 1 or value > 5:
+        messages.error(request, "Rating must be between 1 and 5.")
+        return redirect('book_detail', book_id=book.id)
+
+    BookRating.objects.update_or_create(
+        book=book,
+        user=request.user,
+        defaults={"value": value}
+    )
+
+    return redirect('book_detail', book_id=book.id)
+
+
+@login_required
+@require_POST
+def toggle_favorite(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    favorite = BookFavorite.objects.filter(book=book, user=request.user).first()
+
+    if favorite:
+        favorite.delete()
+    else:
+        BookFavorite.objects.create(book=book, user=request.user)
+
+    next_url = request.POST.get("next")
+    if next_url:
+        return redirect(next_url)
+
+    return redirect('book_detail', book_id=book.id)
 
 
 # ---------- DELETE ----------
@@ -247,10 +371,15 @@ def aboutus(request):
 # ---------- SEARCH ----------
 def searchbooks(request):
     query = request.GET.get('q', '')
-    books = Book.objects.all()
+    books = Book.objects.select_related("username").annotate(
+        avg_rating_value=Avg("ratings__value"),
+        total_ratings_count=Count("ratings"),
+    )
 
     if query:
-        books = Book.objects.filter(name__icontains=query)
+        books = books.filter(name__icontains=query)
+
+    books = attach_book_meta(list(books.order_by("-id")), request.user)
 
     return render(request, 'bookMng/searchbooks.html', {
         'item_list': MainMenu.objects.order_by('menu_order'),

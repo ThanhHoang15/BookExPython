@@ -14,19 +14,35 @@
     <div class="book-grid">
         {% for book in books %}
             <div class="book-card">
+
                 <div class="book-top">
                     <p class="book-name">{{ book.name }}</p>
                     <p class="book-price">${{ book.price }}</p>
                 </div>
 
                 {% if book.picture %}
-                    <img src="{{ book.picture.url }}" alt="{{ book.name }}">
+                    <a href="{% url 'book_detail' book.id %}">
+                        <img src="{{ book.picture.url }}" alt="{{ book.name }}">
+                    </a>
                 {% endif %}
 
                 <form method="post" action="{% url 'add_to_cart' book.id %}" class="add-cart-form">
                     {% csrf_token %}
                     <button type="submit" class="add-cart-btn">Add to Cart</button>
                 </form>
+
+                <div class="search-book-bottom">
+                    <p class="rating">⭐ {{ book.avg_rating }} ({{ book.total_ratings }})</p>
+
+                    <form method="post" action="{% url 'toggle_favorite' book.id %}" class="search-heart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="search-heart-btn">
+                            {% if book.is_favorite %}♥{% else %}♡{% endif %}
+                        </button>
+                    </form>
+                </div>
+
             </div>
         {% endfor %}
     </div>

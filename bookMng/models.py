@@ -1,10 +1,8 @@
 from django.contrib.auth.models import User
-from django.db import models
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-# Create your models here.
 
 class MainMenu(models.Model):
     item = models.CharField(max_length=300, unique=True)
@@ -14,6 +12,7 @@ class MainMenu(models.Model):
     def __str__(self):
         return self.item
 
+
 class Book(models.Model):
     name = models.CharField(max_length=200)
     web = models.URLField(max_length=300)
@@ -22,10 +21,63 @@ class Book(models.Model):
     picture = models.ImageField(upload_to='uploads/')
     username = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
+    def average_rating(self):
+        avg = self.ratings.aggregate(avg=models.Avg("value"))["avg"]
+        return round(avg, 1) if avg else 0
+
+    def rating_count(self):
+        return self.ratings.count()
+
+
+class BookComment(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    body = models.TextField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Comment by {self.user} on {self.book}"
+
+
+class BookRating(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="ratings")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    value = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["book", "user"], name="unique_book_rating_per_user")
+        ]
+
+    def __str__(self):
+        return f"{self.book} - {self.user} - {self.value}"
+
+    def save(self, *args, **kwargs):
+        if self.value < 1 or self.value > 5:
+            raise ValueError("Rating must be between 1 and 5.")
+        super().save(*args, **kwargs)
+
+
+class BookFavorite(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="favorites")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["book", "user"], name="unique_book_favorite_per_user")
+        ]
+
+    def __str__(self):
+        return f"{self.user} favorited {self.book}"
+
+
 class MessageThread(models.Model):
-    """
-    A conversation between exactly two users.
-    """
     user1 = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -53,10 +105,6 @@ class MessageThread(models.Model):
 
     @staticmethod
     def normalize_users(user_a, user_b):
-        """
-        Ensure user ordering is stable so that a thread between two users
-        always maps to the same unique database row.
-        """
         if user_a.pk < user_b.pk:
             return user_a, user_b
         return user_b, user_a

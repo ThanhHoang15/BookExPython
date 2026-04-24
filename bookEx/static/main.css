@@ -183,7 +183,118 @@ body {
     transform-origin: center center;
     pointer-events: none;   /* 🔥 THIS FIXES CLICK */
 }
+.heart-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
 
+.rating {
+    font-size: 13px;
+    color: #555;
+    margin-top: 5px;
+}
+
+.title-row {
+    display: flex;
+    align-items: center;
+}
+
+/* title takes space */
+.displaybook-title {
+    margin: 0;
+}
+
+/* push heart all the way right */
+.heart-form {
+    margin-left: auto;
+    display: flex;
+}
+
+/* fix the line break issue */
+.heart-form form {
+    display: inline;
+}
+
+/* heart style */
+.heart-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #222;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.heart-btn:hover {
+    color: black;
+}
+
+
+.displaybook-info .title-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.displaybook-info .displaybook-title {
+    margin: 0;
+    flex: 1;
+}
+
+.displaybook-info .heart-form {
+    margin: 0 0 0 auto !important;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.displaybook-info .heart-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    color: #111;
+    display: flex;
+    align-items: center;
+}
+
+.search-book-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.search-book-bottom .rating {
+    margin: 0;
+    font-size: 13px;
+    color: #555;
+}
+
+.search-heart-form {
+    margin: 0 !important;
+    padding: 0;
+}
+
+.search-heart-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    color: #111;
+    padding: 0;
+}
 /* hamburger */
 .hamburger {
     position: absolute;
@@ -405,7 +516,61 @@ body {
         padding: 22px;
     }
 }
+.comment-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
 
+@media (max-width: 767px) {
+    .comment-form {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .comment-form textarea {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .comment-form button {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+    }
+
+    .comment-list {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+/* tablet fix */
+@media (max-width: 991px) {
+
+    .comment-form {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .comment-form textarea {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .comment-form button {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+
+    .comment-list {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
 /* mobile */
 @media (max-width: 767px) {
     .displaybooks-page .content {
@@ -758,8 +923,8 @@ body {
 .book-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
-    width: 100%;
+    column-gap: 20px;   /* left-right */
+    row-gap: 60px;      /* ↑ increase this for vertical space */
 }
 
 .book-card {
@@ -940,6 +1105,95 @@ body {
     text-align: center;
     font-size: 14px;
     color: #aaa;
+}
+.detail-action-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.detail-rating {
+    font-size: 15px;
+    color: #333;
+}
+
+.detail-heart-form {
+    margin: 0 !important;
+    padding: 0;
+}
+
+.detail-heart-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    color: #111;
+    padding: 0;
+}
+
+.rate-stars form {
+    display: flex;
+    flex-direction: row-reverse; /* key */
+    gap: 4px;
+}
+
+.rate-stars button {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #ccc;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* hover effect: fill current + all before */
+.rate-stars button:hover,
+.rate-stars button:hover ~ button {
+    color: gold;
+}
+.comment-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    margin: 0 !important;
+}
+
+.comment-form textarea {
+    width: 320px;
+    height: 60px;
+    resize: none;
+}
+
+.comment-list {
+    margin-top: 12px;
+    width: 420px;
+    text-align: left;
+}
+
+.comment-item {
+    margin-bottom: 6px;
+}
+
+/* force comments section to left align */
+.comment-form,
+.comment-list,
+h3 {
+    align-self: flex-start;
+}
+
+/* make them start from left edge of white box */
+.comment-form,
+.comment-list {
+    margin-left: 0 !important;
+}
+
+/* optional: tighten alignment with table */
+.comment-form textarea,
+.comment-list {
+    width: 420px;
 }
 
 /* mobile */
@@ -1227,5 +1481,48 @@ body {
         font-size: 12px;
         line-height: 1.5;
         text-align: center;
+    }
+}
+/* FINAL comment responsive fix */
+.comment-form {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+}
+
+.comment-form textarea {
+    flex: 1 !important;
+    width: auto !important;
+    max-width: 100% !important;
+    height: 70px;
+    box-sizing: border-box;
+}
+
+.comment-form button {
+    width: auto !important;
+    min-width: 130px;
+    padding: 8px 14px;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.comment-list {
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+/* only stack on very small phones */
+@media (max-width: 600px) {
+    .comment-form {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .comment-form button {
+        width: 100% !important;
     }
 }

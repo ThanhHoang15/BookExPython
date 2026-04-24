@@ -32,4 +32,50 @@
          <td>{{ book.web }}</td>
       </tr>
    </table>
+
+<div class="detail-action-row">
+    <div class="detail-rating">
+        ⭐ {{ book.avg_rating }} ({{ book.total_ratings }})
+    </div>
+
+    <form method="post" action="{% url 'toggle_favorite' book.id %}" class="detail-heart-form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" class="detail-heart-btn">
+            {% if book.is_favorite %}♥{% else %}♡{% endif %}
+        </button>
+    </form>
+</div>
+
+<!-- RATING -->
+<div class="rate-stars">
+    <form method="post" action="{% url 'rate_book' book.id %}">
+        {% csrf_token %}
+
+        <button name="value" value="5">★</button>
+        <button name="value" value="4">★</button>
+        <button name="value" value="3">★</button>
+        <button name="value" value="2">★</button>
+        <button name="value" value="1">★</button>
+
+    </form>
+</div>
+
+<!-- COMMENTS -->
+<h3>Comments</h3>
+
+<form method="post" action="{% url 'add_book_comment' book.id %}" class="comment-form">
+    {% csrf_token %}
+    <textarea name="body" placeholder="Write your comment here..."></textarea>
+    <button type="submit">Post Comment</button>
+</form>
+
+<div class="comment-list">
+        <p class="comment-title">Customers say:</p>
+    {% for comment in comments %}
+            <div class="comment-item">
+                <strong>{{ comment.user }}</strong>: {{ comment.body }}
+            </div>
+    {% endfor %}
+</div>
 {% endblock content %}
